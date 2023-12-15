@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="https://ark.wiki.gg/images/1/13/Tek_Generator.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('./background.jpeg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #005f5f;
+        }
+        #container {
+            background-color: rgba(0, 0, 0, 0.872);
+            padding: 40px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-right: 10px;
+        }
+        #tekGeneratorImage {
+            width: 50px;
+            height: 50px;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input, button, select {
+            width: 60%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 1.2em;
+        }
+        button {
+            background-color: #005f5f;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 20px; /* Adiciona um espaçamento abaixo do botão */
+        }
+        #timer {
+            font-size: 2.5em;
+            margin-top: 10px;
+        }
+        #elementImage, #shardImage {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        /* Adiciona estilo para a mensagem de erro */
+        #timer.error {
+            color: red;
+        }
+
+        /* Adiciona estilo ao seletor de raio */
+        select {
+            background-color: #005f5f;
+            color: white;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="header-container">
+            <h1>Tek Gen Calculator </h1>
+            <img id="tekGeneratorImage" src="https://ark.wiki.gg/images/1/13/Tek_Generator.png" alt="Tek Generator">
+        </div>
+        <div class="input-container">
+            <img id="elementImage" src="https://ark.wiki.gg/images/a/a5/Element.png" alt="Element Image">
+            <input id="elementInput" type="number" min="0" value="0">
+        </div>
+        <div class="input-container">
+            <img id="shardImage" src="https://ark.wiki.gg/images/thumb/b/be/Element_Shard.png/228px-Element_Shard.png" alt="Shard Image">
+            <input id="shardInput" type="number" min="0" value="0">
+        </div>
+        <div class="input-container">
+            <label for="radiusSelect">Radius:</label>
+            <select id="radiusSelect">
+                <option value="1.0">1.0x</option>
+                <option value="2.0">2.0x</option>
+                <option value="5.0">5.0x</option>
+                <option value="10.0">10.0x</option>
+            </select>
+        </div>
+        <button onclick="calculateTime()">Calculate Time</button>
+        <p id="timer"></p> <!-- Movido para abaixo do botão -->
+    </div>
+
+    <script>
+        function calculateTime() {
+            var elementCount = document.getElementById('elementInput').value;
+            var shardCount = document.getElementById('shardInput').value;
+            var radius = document.getElementById('radiusSelect').value;
+
+            if (elementCount === '0' && shardCount === '0') {
+                document.getElementById('timer').innerHTML = 'Have to put some value lol';
+                document.getElementById('timer').classList.add('error'); // Adiciona a classe 'error'
+                return; // Sai da função para evitar a execução do restante do código
+            }
+
+            // Consumption rates based on the official rates from ARK Survival Ascended
+            var elementConsumptionRate = 1.5; // replace with your consumption rate for elements
+            var shardConsumptionRate = 0.001; // adjusted to consider 1000 Element Shards as 1 Element
+
+            // Calculate time based on radius
+            var baseHours = 18;
+            var additionalHours = 0.33 * (radius - 1.0);
+            var totalHours = baseHours + additionalHours;
+
+            var time = (elementCount / elementConsumptionRate) + (shardCount / shardConsumptionRate);
+
+            // Adjust time based on radius
+            time *= (baseHours / totalHours);
+
+            var hours = Math.floor(time);
+            var minutes = Math.floor((time % 1) * 60);
+            document.getElementById('timer').innerHTML = "The generator will last " + hours + " hours and " + minutes + " minutes.";
+            document.getElementById('timer').classList.remove('error'); // Remove a classe 'error'
+        }
+    </script>
+</body>
+</html>
